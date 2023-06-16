@@ -1,94 +1,58 @@
 import React, { useState } from "react";
 import "./App.css";
 
-//ข้อนี้ทำเสร็จไม่ทันนะครับ ยังไม่ได้จัดรูปเเบบoutput output ที่ได้ 6*3 = 18+4 = 22+2 = 24 ตัวอย่างต้องการ 6*3+4+2 เเต่คำตอบถูกอยู่ครับ
 const App: React.FC = () => {
-  const [inputNumbers, setInputNumbers] = useState<string>(""); // เก็บค่าตัวเลขที่ผู้ใช้ป้อน
-  const [errorMessage, setErrorMessage] = useState<string>(""); // เก็บข้อความผิดพลาด
+  const [inputNumbers, setInputNumbers] = useState<string>(""); 
   const [result, setResult] = useState<string | null>(null);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputNumbers(event.target.value);
   };
 
-  const calculateResult = () => {
-    setErrorMessage("");
-    setResult(null);
+  const game24 = (nums: number[]): string => {
+    const target = 24;
+    const operations = ["+", "-", "*", "/"];
 
-    // แปลงข้อมูลเข้ารูปแบบตัวเลข
-    const numbers = inputNumbers
-      .split(",")
-      .map((num) => parseFloat(num.trim()));
+    for (const op1 of operations) {
+      for (const op2 of operations) {
+        for (const op3 of operations) {
+          const expression = `${nums[0]} ${op1} ${nums[1]} ${op2} ${nums[2]} ${op3} ${nums[3]}`;
+          const result = eval(expression);
 
-    // ตรวจสอบว่าป้อนตัวเลขหรือไม่
-    const hasNonNumericInput = numbers.some((num) => isNaN(num));
-    if (hasNonNumericInput) {
-      setErrorMessage("กรุณาใส่ตัวเลข");
-      return; // จบการทำงานของฟังก์ชันเมื่อมีข้อความผิดพลาด
-    }
-
-    // ตรวจสอบว่าตัวเลขมีไม่เกิน 4 ตัว
-    if (numbers.length > 4) {
-      setErrorMessage("กรุณาใส่ตัวเลขไม่เกิน 4 ตัว");
-      return; // จบการทำงานของฟังก์ชันเมื่อมีข้อความผิดพลาด
-    }
-
-    // ตรวจสอบข้อตกลงเงื่อนไข 24
-    const result = find24(numbers);
-    if (result) {
-      setResult(result);
-    } else {
-      setErrorMessage("ชุดตัวเลขนี้ไม่สามารถทำให้ได้ผลลัพธ์เป็น 24");
-    }
-    console.log("result", result);
-  };
-
-  const find24 = (nums: number[]): string | null => {
-    if (nums.length === 1) {
-      //ตรวจสอบว่าค่าตัวเลขนั้นใกล้เคียงกับ 24 หรือไม่
-      return Math.abs(nums[0] - 24) < 0.01 ? "24" : null;
-    }
-
-    const operators = ["/", "*", "+", "-"];
-
-    for (let i = 0; i < nums.length; i++) {
-      for (let j = 0; j < nums.length; j++) {
-        if (i !== j) {
-          const num1 = nums[i];
-          const num2 = nums[j];
-
-          for (const op of operators) {
-            const expression = `${num1}${op}${num2}`; //สร้างรูปเเบบสมการต่างๆ
-            console.log("expression", expression);
-            const result = evaluateExpression(expression);
-            if (result !== null) {
-              const rest = nums.filter(
-                (num, index) => index !== i && index !== j
-              );
-              const subResult = find24([result, ...rest]);
-
-              if (subResult !== null) {
-                return `${expression} = ${subResult}`;
-              }
-            }
+          if (result === target) {
+            return expression;
           }
         }
       }
     }
 
-    return null;
+    return "ไม่สามารถสร้างตัวเลข 24 ได้"; //กรณีทำให้เป็น 24 ไม่ได้
   };
-
-  const evaluateExpression = (expression: string): number | null => {
-    //คำนวณผลลัพธ์จากสมการที่กำหนด
-    try {
-      const result = eval(expression);
-      return Number.isFinite(result) ? result : null;
-    } catch {
-      return null;
+  const calculateResult = () => {
+    //console.log(inputNumbers)
+    const numbers = inputNumbers.split(",").map((num) => num.trim());;
+    console.log(numbers)
+    for (let i = 0; i < numbers.length; i++) {
+      if (isNaN(Number(numbers[i]))) { //กรณีใส่ string อื่นที่ไม่ใช่ตัวเลข
+        return setResult("กรุณาใส่ตัวเลข 1-9 เท่านั้น");
+      }else if(numbers[i]===''){ //กรณีใส่ , เเล้วไม่เติมเลข หรือจัดformatผิด
+        return setResult("กรุณาใส่ตัวเลข 1-9 หรือใส่เครื่องหมาย , ให้ถูกต้อง");
+      }
     }
-  };
+    
+    const numbers1 = numbers.map((num) => parseFloat(num));
+    console.log(numbers1)
+    if (numbers.length !== 4) { //กรณีใส่เลขมากกว่าหรือน้อยกว่า4ตัว
+      return setResult("กรุณาใส่ตัวเลขให้ครบ 4 ตัว");
+    }
 
+    for (const i of numbers1) {
+      if (i > 9) {//กรณีใส่เลขที่เกิน 9
+        return setResult("กรุณาใส่ตัวเลข 1-9");
+      }
+    }
+    setResult(game24(numbers1));
+  };
   return (
     <div className="container">
       <h1>ข้อที่2 เกมส์ 24</h1>
@@ -104,10 +68,10 @@ const App: React.FC = () => {
           ตรวจสอบ
         </button>
       </div>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
-      {result && <p className="result-message">{result}</p>}
+      <p className="result-message">{result}</p>
     </div>
   );
 };
 
 export default App;
+
