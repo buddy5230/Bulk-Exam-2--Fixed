@@ -12,3 +12,17 @@ button{
 .input-field{
   width: 180px;
 }
+.result-message{
+  margin-top: 0;
+  font-size: 30px;
+  color: green;
+  font-weight: 500;
+}
+.error-message{
+  margin-top: 0;
+  font-size: 30px;
+  color: red;
+}
+h2{
+  margin-bottom: 0;
+}
