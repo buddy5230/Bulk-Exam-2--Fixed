@@ -18,8 +18,9 @@ const App: React.FC = () => {
       for (const op2 of operations) {
         for (const op3 of operations) {
           const expression = `${nums[0]} ${op1} ${nums[1]} ${op2} ${nums[2]} ${op3} ${nums[3]}`;
+          console.log("expression",expression); //1 * 2 * 3 * 4
           const result = eval(expression);
-
+          console.log("result",result); //24
           if (result === target) {
             return expression;
           }
@@ -54,8 +55,8 @@ const App: React.FC = () => {
     }
 
     for (const i of numbers1) {
-      if (i > 9) {
-        //กรณีใส่เลขที่เกิน 9
+      if (i > 9 || i < 1) {
+        //กรณีใส่เลขที่เกิน 9 หรือน้อยกว่า 1
         return setErrorMessage("กรุณาใส่ตัวเลข 1-9");
       }
     }
