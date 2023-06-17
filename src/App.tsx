@@ -12,8 +12,8 @@ const App: React.FC = () => {
 
   const game24 = (nums: number[]) => {
     const target = 24;
-    const operations = ["*", "/", "+", "-"];
-
+   // const operations = ["*", "/", "+", "-"];
+    const operations = ["+", "-", "*", "/"];
     for (const op1 of operations) {
       for (const op2 of operations) {
         for (const op3 of operations) {
